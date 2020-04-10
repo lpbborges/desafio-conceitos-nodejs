@@ -74,27 +74,19 @@ app.delete("/repositories/:id", validateRepositoryId, (request, response) => {
 });
 
 app.post("/repositories/:id/like", validateRepositoryId, (request, response) => {
-  const { id } = request.params;
+  const { id } = request.params; 
 
-  const respositoryIndex = repositories.findIndex(repository => repository.id === id);
+  const findRepository = repositories.find(repository => 
+    repository.id === id  
+  );
 
-  if (respositoryIndex < 0) {
-    return response.status(400).json({ error: 'Repository not found' });
+  if (!findRepository) {
+    return response.status(400).json({ error: 'Repository does not exists.' });
   }
 
-  const { title, url, techs, likes } = repositories[respositoryIndex];
+  findRepository.likes += 1;
 
-  const repository = {
-    id,
-    title,
-    url,
-    techs,
-    likes: likes + 1
-  }
-
-  repositories[respositoryIndex] = repository;
-
-  return response.json(repository);
+  return response.json(findRepository);  
 });
 
 module.exports = app;
